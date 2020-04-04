@@ -1,4 +1,4 @@
-import { printDefault, printText } from "../modules/printer";
+import Printer from "../modules/printer";
 var express = require("express");
 var router = express.Router();
 const axios = require("axios");
@@ -36,20 +36,26 @@ router.get("/access", async (req, res, next) => {
 });
 
 //프린터 목록 보이기
-router.get("/list", function (req, res, next) {
-  printClient.getPrinters().then(function (printers) {
-    console.log(printers);
+router.get("/list", async (req, res, next) => {
+  Printer.getPrinters((data) => {
+    res.send(data);
   });
 });
 
 router.get("/print/test", function (req, res, next) {
-  printDefault();
+  Printer.printDefault();
   res.send("Your request has been sent!");
 });
 
 router.get("/print/text", async (req, res, next) => {
-  printText();
+  Printer.printText();
   res.send("Your request has been sent!");
+});
+
+router.get("/jobs", (req, res, next) => {
+  Printer.getQueuedJobs((data) => {
+    res.send(data);
+  });
 });
 
 module.exports = router;

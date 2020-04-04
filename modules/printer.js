@@ -15,16 +15,28 @@ const printClient = new CloudPrint({
   refreshToken: process.env.REFRESH_TOKEN,
 });
 
-const printDefault = () => {
-  printClient.print(process.env.MY_PRINTER1, "print me! " + new Date(), "text/plain");
+const Printer = {
+  printDefault: () => {
+    printClient.print(process.env.MY_PRINTER1, "print me! " + new Date(), "text/plain");
+  },
+  printText: () => {
+    const filename = path.join(__dirname, "../queue/picture.jpg");
+    const data = fs.readFileSync(filename, "utf8");
+    const type = mime.lookup(filename); // 'text/markdown'
+    console.log(data.length, filename, type);
+    printClient.print(process.env.MY_PRINTER1, data, type);
+  },
+  getPrinters: (callback) => {
+    printClient.getPrinters().then(function (printers) {
+      if (callback !== null) {
+        callback(printers); //json
+      }
+    });
+  },
+  getQueuedJobs: (callback) => {
+    printClient.getQueuedJobs().then(function (data) {
+      callback(data);
+    });
+  },
 };
-
-const printText = () => {
-  const filename = path.join(__dirname, "../queue/picture.jpg");
-  const data = fs.readFileSync(filename, "utf8");
-  const type = mime.lookup(filename); // 'text/markdown'
-  console.log(data.length, filename, type);
-  printClient.print(process.env.MY_PRINTER1, data, type);
-};
-
-export { printDefault, printText };
+export default Printer;
