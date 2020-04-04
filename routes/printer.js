@@ -48,9 +48,8 @@ router.get("/print/test", function (req, res, next) {
 
 router.get("/print/sp", async (req, res, next) => {
   console.log("Your request has been sent!");
-  Printer.printEspecially((data) => {
-    res.send(data);
-  });
+  Printer.print();
+  res.send("data");
 });
 
 router.get("/jobs", (req, res, next) => {

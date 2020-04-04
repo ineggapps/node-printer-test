@@ -19,13 +19,25 @@ const Printer = {
   printDefault: () => {
     printClient.print(process.env.MY_PRINTER1, "print me! " + new Date(), "text/plain");
   },
-  printEspecially: (callback) => {
+  printEspecially: () => {
     const filename = path.join(__dirname, "../queue/restaurants.txt");
     const data = fs.readFileSync(filename, "utf8");
     const type = mime.lookup(filename); // 'text/markdown'
     console.log(data.length, filename, type);
     printClient.print(process.env.MY_PRINTER1, data, type, new Date() + " PRINT");
     //GCPClient.prototype.print = failRetry(function (printerId, content, contentType, title, settings, cb) {
+  },
+  print: async () => {
+    const filename = path.join(__dirname, "../queue/picture.jpg");
+    const data = fs.readFileSync(filename);
+    const type = mime.lookup(filename); // 'text/markdown'
+    console.log(data.length, filename, type);
+    printClient.print(
+      process.env.MY_PRINTER1,
+      new Buffer(data).toString("base64"),
+      type,
+      new Date() + " PRINT"
+    );
   },
   getPrinters: (callback) => {
     printClient.getPrinters().then(function (printers) {
