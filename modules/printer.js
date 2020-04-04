@@ -20,12 +20,11 @@ const printDefault = () => {
 };
 
 const printText = () => {
-  const filename = path.join(__dirname, "../queue/test.pdf");
-  const result = fs.readFileSync(filename, "utf8");
-  console.log(result, filename);
+  const filename = path.join(__dirname, "../queue/picture.jpg");
+  const data = fs.readFileSync(filename, "utf8");
   const type = mime.lookup(filename); // 'text/markdown'
-  console.log(type);
-  // printClient.print(process.env.MY_PRINTER1, data);
+  console.log(data.length, filename, type);
+  printClient.print(process.env.MY_PRINTER1, data, type);
 };
 
 export { printDefault, printText };
