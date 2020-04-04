@@ -1,4 +1,4 @@
-require("dotenv").config();
+import { printDefault, printText } from "../modules/printer";
 var express = require("express");
 var router = express.Router();
 /* GET users listing. */
@@ -16,23 +16,21 @@ var router = express.Router();
 //   res.send(req.body);
 // });
 
-router.get("/print", function (req, res, next) {
-  const code = process.env.CODE;
-  const client_id = process.env.CLIENT_ID;
-  const client_secret = process.env.CLIENT_SECRET;
-
-  var CloudPrint = require("node-gcp");
-  var printClient = new CloudPrint({
-    clientId: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    accessToken: process.env.ACCESS_TOKEN,
-    refreshToken: process.env.REFRESH_TOKEN,
-  });
-
+//프린터 목록 보이기
+router.get("/list", function (req, res, next) {
   printClient.getPrinters().then(function (printers) {
     console.log(printers);
   });
-  printClient.print(process.env.MY_PRINTER1, "print me! " + new Date(), "text/plain");
-  res.send("done!");
 });
+
+router.get("/print/test", function (req, res, next) {
+  printDefault();
+  res.send("Your request has been sent!");
+});
+
+router.get("/print/text", async (req, res, next) => {
+  printText();
+  res.send("Your request has been sent!");
+});
+
 module.exports = router;
