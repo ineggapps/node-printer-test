@@ -37,9 +37,8 @@ router.get("/access", async (req, res, next) => {
 
 //프린터 목록 보이기
 router.get("/list", async (req, res, next) => {
-  Printer.getPrinters((data) => {
-    res.send(data);
-  });
+  Printer.getPrinters();
+  res.send("Your request has been sent!");
 });
 
 router.get("/print/test", function (req, res, next) {
@@ -47,9 +46,11 @@ router.get("/print/test", function (req, res, next) {
   res.send("Your request has been sent!");
 });
 
-router.get("/print/text", async (req, res, next) => {
-  Printer.printText();
-  res.send("Your request has been sent!");
+router.get("/print/sp", async (req, res, next) => {
+  console.log("Your request has been sent!");
+  Printer.printEspecially((data) => {
+    res.send(data);
+  });
 });
 
 router.get("/jobs", (req, res, next) => {
