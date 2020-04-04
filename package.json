@@ -18,10 +18,13 @@
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
     "express": "^4.16.4",
+    "express-session": "^1.17.0",
+    "file-base64": "^1.0.0",
     "mime-types": "^2.1.26",
     "morgan": "~1.9.1",
     "node-gcp": "^0.2.1",
-    "printer": "^0.4.0"
+    "printer": "^0.4.0",
+    "session-file-store": "^1.4.0"
   },
   "devDependencies": {
     "@babel/plugin-transform-runtime": "^7.9.0"

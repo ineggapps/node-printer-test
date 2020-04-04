@@ -1,7 +1,10 @@
-import Printer from "../modules/printer";
+import Printer, { printClientFactory } from "../modules/printer";
 var express = require("express");
 var router = express.Router();
 const axios = require("axios");
+
+let getPrintClient = (req) =>
+  printClientFactory(req.session.access_token, req.session.refresh_token);
 
 /* GET users listing. */
 router.get("/", function (req, res, next) {
@@ -13,7 +16,8 @@ router.get("/", function (req, res, next) {
 router.get("/access", async (req, res, next) => {
   // res.send(req.query.code);
   let result = "...";
-  console.log(process.env.CLIENT_ID);
+  res.send(req.query.code);
+  return;
   try {
     const { data } = await axios({
       url: "https://www.googleapis.com/oauth2/v3/token",
@@ -27,33 +31,41 @@ router.get("/access", async (req, res, next) => {
       },
     });
     result = data;
+    req.session.code = req.query.code;
+    req.session.access_token = result.access_token;
+    req.session.refresh_token = result.refresh_token;
+    console.log(result.access_token, result.refresh_token);
+    res.redirect("/printer/print/sp");
   } catch (error) {
-    result = "error";
+    result = error;
     console.log(error);
+    res.send(result);
   }
   // res.send("result");
-  res.send(result);
 });
 
 //프린터 목록 보이기
 router.get("/list", async (req, res, next) => {
-  Printer.getPrinters();
-  res.send("Your request has been sent!");
+  isNull(req);
+  Printer.getPrinters(getPrintClient(req), (printers) => {
+    res.send(JSON.stringify(printers));
+  });
+  // res.send("Your request has been sent!");
 });
 
 router.get("/print/test", function (req, res, next) {
-  Printer.printDefault();
+  Printer.printDefault(getPrintClient(req));
   res.send("Your request has been sent!");
 });
 
 router.get("/print/sp", async (req, res, next) => {
   console.log("Your request has been sent!");
-  Printer.print();
+  Printer.print(getPrintClient(req));
   res.send("data");
 });
 
 router.get("/jobs", (req, res, next) => {
-  Printer.getQueuedJobs((data) => {
+  Printer.getQueuedJobs(getPrintClient(req), (data) => {
     res.send(data);
   });
 });
